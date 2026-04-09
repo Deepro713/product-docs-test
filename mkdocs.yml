@@ -5,6 +5,13 @@ docs_dir: docs
 site_dir: site
 use_directory_urls: false
 
+theme:
+  name: material
+  palette:
+    scheme: default
+    primary: indigo
+    accent: indigo
+
 nav:
   - Home: index.md
   - Test Page: test.md
