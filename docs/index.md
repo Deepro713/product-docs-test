@@ -10,4 +10,4 @@ This is the homepage of the documentation.
 
 ## About this site
 
-This small setup is only for verifying that the Markdown-to-HTML documentation pipeline is working correctly.
+This homepage has been updated to verify the GitHub build pipeline.
