@@ -1,4 +1,4 @@
-name: Build documentation
+name: Build docs and publish site files branch
 
 on:
   push:
@@ -11,8 +11,11 @@ on:
       - '.github/workflows/build.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  build-docs:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,8 +36,25 @@ jobs:
         run: |
           mkdocs build --strict
 
-      - name: Upload built site
+      - name: Upload built site artifact
         uses: actions/upload-artifact@v4
         with:
           name: built-docs-site
           path: site
+
+      - name: Publish built site to site-files branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd site
+
+          git init
+          git checkout -B site-files
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+          git commit -m "Deploy site from ${GITHUB_SHA}"
+
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force origin site-files
