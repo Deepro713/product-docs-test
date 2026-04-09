@@ -36,6 +36,10 @@ jobs:
         run: |
           mkdocs build --strict
 
+      - name: Add custom domain file
+        run: |
+          echo "docs-test.dkube.io" > site/CNAME
+
       - name: Upload built site artifact
         uses: actions/upload-artifact@v4
         with:
