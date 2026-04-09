@@ -2,6 +2,7 @@ site_name: Test Documentation
 
 docs_dir: docs
 site_dir: site
+use_directory_urls: false
 
 nav:
   - Home: index.md
