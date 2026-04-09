@@ -32,3 +32,9 @@ jobs:
       - name: Build documentation
         run: |
           mkdocs build --strict
+
+      - name: Upload built site
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-docs-site
+          path: site
