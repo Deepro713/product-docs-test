@@ -7,3 +7,7 @@ Go back to the [Introduction](index.md).
 Until proper content comes, enjoy the company of this little kitty!
 
 ![Kitten](images/kitten.jpg)
+
+```python
+print("Hello, World!")
+```
