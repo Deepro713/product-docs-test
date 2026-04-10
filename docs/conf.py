@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-project = "DKubeX 2.0 Documentation`"
+project = "DKubeX 2.0 Documentation"
 author = "DKube"
 doc_version = "v0.1"
 build_date = datetime.now(timezone.utc).strftime("%d.%m.%Y")
@@ -20,6 +20,11 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "shibuya"
 html_title = project
 html_static_path = ["_static"]
-html_js_files = ["_static/dkube-link.js"]
+html_logo = "_static/DKube_Icon_512x512.svg"
+html_theme_options = {
+    "logo_target": "index.html",
+}
+html_css_files = ["custom.css"]
+html_js_files = ["dkube-link.js"]
 html_baseurl = "https://docs-test.dkube.io/"
 html_favicon = "_static/DKube_Icon_512x512.svg"
