@@ -1,4 +1,3 @@
 site/
-docs-v0.1/_build/
-docs-v0.2/_build/
-docs-v0.3/_build/
+.venv-docs/
+__pycache__/
