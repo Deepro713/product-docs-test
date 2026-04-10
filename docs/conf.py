@@ -5,6 +5,7 @@ copyright = "2026, DKube"
 extensions = [
     "myst_parser",
     "sphinx.ext.githubpages",
+    "sphinx_copybutton",
 ]
 
 templates_path = ["_templates"]
