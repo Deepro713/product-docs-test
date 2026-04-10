@@ -19,7 +19,7 @@ The platform provides a structured workflow for versioned documentation delivery
 ## Architecture
 
 1. Versioned source model:
-- Each version is maintained in a dedicated top-level folder such as `docs-v0.1`, `docs-v0.2`, and `docs-v0.3`.
+- Each version is maintained in a dedicated top-level folder such as `docs-v0.1`, `docs-v0.2`, etc.
 
 2. Shared configuration model:
 - Shared Sphinx logic is centralized in `conf_main.py`.
@@ -35,10 +35,9 @@ The platform provides a structured workflow for versioned documentation delivery
 
 - `.github/workflows/build.yml`: build and publishing workflow.
 - `conf_main.py`: shared configuration builder.
+- `docs-v*/***.md`: documentation content pages.
 - `docs-v*/conf.py`: per-version configuration wrappers.
-- `docs-v*/index.md`, `docs-v*/test.md`: versioned content sources.
 - `site/`: local generated output for validation.
-- `requirements.txt`: Python dependencies.
 
 ## Prerequisites
 
