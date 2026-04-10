@@ -2,6 +2,8 @@
 
 Welcome to the test documentation site.
 
+This is version {{ doc_version }}.
+
 This is the homepage of the documentation.
 
 ## Contents
