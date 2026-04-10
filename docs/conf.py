@@ -15,3 +15,4 @@ html_theme = "shibuya"
 html_title = "Test Documentation"
 html_static_path = ["_static"]
 html_baseurl = "https://docs-test.dkube.io/"
+html_favicon = "images/DKube_Icon_512x512.svg"
