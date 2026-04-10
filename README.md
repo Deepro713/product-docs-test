@@ -110,12 +110,6 @@ Current implemented behavior on push to `main` (for docs/workflow changes):
 Pages and custom domain delivery:
 - This workflow does not execute a separate GitHub Pages deploy action.
 - Delivery is expected through repository Pages configuration using `site-files` as the published source.
-- The workflow currently writes a `CNAME` file into generated output to support custom-domain mapping.
-
-## Operational Notes
-
-- The `rm -rf site/*` cleanup command is sufficient for this repository.
-- Earlier `find ... -mindepth/-maxdepth` usage was a safety-oriented variant and is not mandatory here.
 
 ## Troubleshooting
 
@@ -160,10 +154,4 @@ Remove versions (example remove `v0.2`, `v0.3`, `v0.4`):
 
 ```bash
 for VERSION in v0.2 v0.3 v0.4; do rm -rf "docs-$VERSION" "site/docs-$VERSION"; done
-```
-
-Publish readiness check (before merge to `main`):
-
-```bash
-test -f .github/workflows/build.yml && git check-ignore -v site/placeholder .venv-docs/placeholder && git status --short
 ```
