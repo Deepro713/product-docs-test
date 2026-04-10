@@ -2,11 +2,18 @@
 
 Welcome to the test documentation site.
 
+This is version {{ doc_version }}.
+
 This is the homepage of the documentation.
 
 ## Contents
 
-- [Test Page](test.md)
+```{toctree}
+:maxdepth: 2
+:caption: Contents
+
+test
+```
 
 ## About this site
 

@@ -5,8 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
+      - 'docs-v*/**'
       - 'requirements.txt'
       - '.github/workflows/build.yml'
   workflow_dispatch:
@@ -34,7 +33,21 @@ jobs:
 
       - name: Build documentation
         run: |
-          mkdocs build --strict
+          rm -rf site/*
+
+          mapfile -t DOC_DIRS < <(ls -d docs-v* | sort -V)
+          if [ ${#DOC_DIRS[@]} -eq 0 ]; then
+            echo "No docs-v* directories found."
+            exit 1
+          fi
+
+          LATEST_DOC_DIR="${DOC_DIRS[${#DOC_DIRS[@]}-1]}"
+
+          for DOC_DIR in "${DOC_DIRS[@]}"; do
+            sphinx-build -b html -W --keep-going "$DOC_DIR" "site/$DOC_DIR/html"
+          done
+
+          sphinx-build -b html -W --keep-going "$LATEST_DOC_DIR" site/docs-latest/html
 
       - name: Add custom domain file
         run: |
