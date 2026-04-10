@@ -19,7 +19,7 @@ The platform provides a structured workflow for versioned documentation delivery
 ## Architecture
 
 1. Versioned source model:
-- Each version is maintained in a dedicated top-level folder such as `docs-v0.1`, `docs-v0.2`, etc.
+- Each version is maintained in a dedicated top-level folder such as `docs-v0.1`.
 
 2. Shared configuration model:
 - Shared Sphinx logic is centralized in `conf_main.py`.
@@ -66,29 +66,35 @@ rm -rf site/* && for DOC_DIR in $(ls -d docs-v* | sort -V); do python -m sphinx 
 
 4. Optional direct version links:
 - `site/docs-v0.1/html/index.html`
-- `site/docs-v0.2/html/index.html`
-- `site/docs-v0.3/html/index.html`
 
 ## Adding a New Version
 
-Example: create `v0.4` from `v0.3`.
+Example: create `v0.2` from `v0.1`.
 
 1. Duplicate an existing version folder:
 
 ```bash
-cp -R docs-v0.3 docs-v0.4
+cp -R docs-v0.1 docs-v0.2
 ```
 
-2. Update `doc_version` in `docs-v0.4/conf.py` to `v0.4`.
+2. Update `doc_version` in `docs-v0.2/conf.py` to `v0.2`.
 
-3. Update content files under `docs-v0.4/`.
+3. Update content files under `docs-v0.2/`.
 
 4. Re-run the full build.
 
 Expected outcomes:
-- `site/docs-v0.4/html` is generated.
-- `site/docs-latest/html` is regenerated from `v0.4`.
-- Version navigation marks `v0.4` as latest.
+- `site/docs-v0.2/html` is generated.
+- `site/docs-latest/html` is regenerated from `v0.2`.
+- Version navigation marks `v0.2` as latest.
+
+## Removing an Existing Version
+
+To remove specific versions from both source and local generated output, use:
+
+```bash
+for VERSION in v0.2 v0.3 v0.4; do rm -rf "docs-$VERSION" "site/docs-$VERSION"; done
+```
 
 ## CI Workflow Summary
 
@@ -144,10 +150,16 @@ Open homepage (`docs-latest`):
 open site/docs-latest/html/index.html
 ```
 
-Add new version (example `v0.4` from `v0.3`):
+Add new version (example `v0.2` from `v0.1`):
 
 ```bash
-cp -R docs-v0.3 docs-v0.4 && sed -i '' 's/doc_version="v0.3"/doc_version="v0.4"/' docs-v0.4/conf.py
+cp -R docs-v0.1 docs-v0.2 && sed -i '' 's/doc_version="v0.1"/doc_version="v0.2"/' docs-v0.2/conf.py
+```
+
+Remove versions (example remove `v0.2`, `v0.3`, `v0.4`):
+
+```bash
+for VERSION in v0.2 v0.3 v0.4; do rm -rf "docs-$VERSION" "site/docs-$VERSION"; done
 ```
 
 Publish readiness check (before merge to `main`):
