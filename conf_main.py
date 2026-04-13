@@ -11,15 +11,15 @@ def version_key(version: str):
 
 def version_url(version: str, latest: str):
     if version == latest:
-        return "../../docs-latest/html/index.html"
-    return f"../../docs-{version}/html/index.html"
+        return "../docs/index.html"
+    return f"../docs-{version}/index.html"
 
 
 def discover_versions(repo_root: Path):
     discovered_versions = []
-    for directory in repo_root.glob("docs-v*"):
+    for directory in repo_root.glob("raw-v*"):
         if directory.is_dir():
-            discovered_versions.append(directory.name.replace("docs-", "", 1))
+            discovered_versions.append(directory.name.replace("raw-", "", 1))
 
     return sorted(discovered_versions, key=version_key)
 
@@ -35,7 +35,7 @@ def build_conf(doc_version: str, conf_file: str) -> dict[str, Any]:
     documentation_versions = [{"version": version} for version in versions]
     latest_version = max((item["version"] for item in documentation_versions), key=version_key)
 
-    default_current_url = f"../../docs-{doc_version}/html/index.html"
+    default_current_url = f"../docs-{doc_version}/index.html"
     current_version_url = next(
         (
             version_url(item["version"], latest_version)

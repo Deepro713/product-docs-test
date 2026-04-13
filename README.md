@@ -12,8 +12,8 @@ This repository hosts the DKubeX 2.0 multi-version documentation platform, built
 
 The platform provides a structured workflow for versioned documentation delivery:
 - Build all documentation sources from folders matching `docs-v*`.
-- Generate immutable outputs per version at `site/docs-vX.Y/html`.
-- Maintain `site/docs-latest/html` as the canonical documentation homepage.
+- Generate immutable outputs per version at `site/docs-vX.Y`.
+- Maintain `site/docs` as the canonical documentation homepage.
 - Publish generated artifacts to the `site-files` branch through GitHub Actions.
 
 ## Architecture
@@ -28,8 +28,8 @@ The platform provides a structured workflow for versioned documentation delivery
 
 3. Latest-homepage model:
 - The highest semantic version is automatically treated as `Latest`.
-- The system builds that version again to `site/docs-latest/html`.
-- Primary reader entry point: `site/docs-latest/html/index.html`.
+- The system builds that version again to `site/docs`.
+- Primary reader entry point: `site/docs/index.html`.
 
 ## Repository Structure
 
@@ -58,14 +58,14 @@ pip install -r requirements.txt
 2. Build all versions and refresh latest:
 
 ```bash
-rm -rf site/* && for DOC_DIR in $(ls -d docs-v* | sort -V); do python -m sphinx -b html -W --keep-going "$DOC_DIR" "site/$DOC_DIR/html"; done && LATEST_DOC_DIR=$(ls -d docs-v* | sort -V | tail -n1) && python -m sphinx -b html -W --keep-going "$LATEST_DOC_DIR" site/docs-latest/html
+rm -rf docs docs* && for DOC_DIR in $(ls -d docs-v* | sort -V); do python -m sphinx -b html -W --keep-going "$DOC_DIR" "$DOC_DIR"; done && LATEST_DOC_DIR=$(ls -d docs-v* | sort -V | tail -n1) && python -m sphinx -b html -W --keep-going "$LATEST_DOC_DIR" docs
 ```
 
 3. Validate the homepage first:
-- `site/docs-latest/html/index.html`
+- `site/docs/index.html`
 
 4. Optional direct version links:
-- `site/docs-v0.1/html/index.html`
+- `site/docs-v0.1/index.html`
 
 ## Adding a New Version
 
@@ -84,8 +84,8 @@ cp -R docs-v0.1 docs-v0.2
 4. Re-run the full build.
 
 Expected outcomes:
-- `site/docs-v0.2/html` is generated.
-- `site/docs-latest/html` is regenerated from `v0.2`.
+- `site/docs-v0.2` is generated.
+- `site/docs` is regenerated from `v0.2`.
 - Version navigation marks `v0.2` as latest.
 
 ## Removing an Existing Version
@@ -102,8 +102,8 @@ Workflow file: `.github/workflows/build.yml`
 
 Current implemented behavior on push to `main` (for docs/workflow changes):
 1. Install dependencies.
-2. Build all `docs-v*` versions to `site/docs-v*/html`.
-3. Rebuild highest version to `site/docs-latest/html`.
+2. Build all `docs-v*` versions to `site/docs-v*`.
+3. Rebuild highest version to `site/docs`.
 4. Upload site artifact.
 5. Publish generated output to `site-files` branch.
 
@@ -135,13 +135,13 @@ python3 -m venv .venv-docs && source .venv-docs/bin/activate && pip install --up
 Build all versions + latest:
 
 ```bash
-rm -rf site/* && for DOC_DIR in $(ls -d docs-v* | sort -V); do python -m sphinx -b html -W --keep-going "$DOC_DIR" "site/$DOC_DIR/html"; done && LATEST_DOC_DIR=$(ls -d docs-v* | sort -V | tail -n1) && python -m sphinx -b html -W --keep-going "$LATEST_DOC_DIR" site/docs-latest/html
+rm -rf docs docs* && for DOC_DIR in $(ls -d docs-v* | sort -V); do python -m sphinx -b html -W --keep-going "$DOC_DIR" "$DOC_DIR"; done && LATEST_DOC_DIR=$(ls -d docs-v* | sort -V | tail -n1) && python -m sphinx -b html -W --keep-going "$LATEST_DOC_DIR" docs
 ```
 
-Open homepage (`docs-latest`):
+Open homepage (`docs`):
 
 ```bash
-open site/docs-latest/html/index.html
+open site/docs/index.html
 ```
 
 Add new version (example `v0.2` from `v0.1`):

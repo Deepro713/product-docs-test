@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'docs-v*/**'
+      - 'raw-v*/**'
       - 'requirements.txt'
       - '.github/workflows/build.yml'
   workflow_dispatch:
@@ -33,37 +33,46 @@ jobs:
 
       - name: Build documentation
         run: |
-          rm -rf site/*
+          rm -rf docs docs-v* CNAME
 
-          mapfile -t DOC_DIRS < <(ls -d docs-v* | sort -V)
-          if [ ${#DOC_DIRS[@]} -eq 0 ]; then
-            echo "No docs-v* directories found."
+          mapfile -t SRC_DIRS < <(find . -maxdepth 1 -type d -name 'raw-v*' -print | sed 's|^\./||' | sort -V)
+          if [ ${#SRC_DIRS[@]} -eq 0 ]; then
+            echo "No raw-v* directories found."
             exit 1
           fi
 
-          LATEST_DOC_DIR="${DOC_DIRS[${#DOC_DIRS[@]}-1]}"
+          LATEST_SRC_DIR="${SRC_DIRS[${#SRC_DIRS[@]}-1]}"
 
-          for DOC_DIR in "${DOC_DIRS[@]}"; do
-            sphinx-build -b html -W --keep-going "$DOC_DIR" "site/$DOC_DIR/html"
+          for SRC_DIR in "${SRC_DIRS[@]}"; do
+            VERSION="${SRC_DIR#raw-}"
+            sphinx-build -b html -W --keep-going "$SRC_DIR" "docs-$VERSION"
           done
 
-          sphinx-build -b html -W --keep-going "$LATEST_DOC_DIR" site/docs-latest/html
+          sphinx-build -b html -W --keep-going "$LATEST_SRC_DIR" docs
 
       - name: Add custom domain file
         run: |
-          echo "docs-test.dkube.io" > site/CNAME
+          echo "docs-test.dkube.io" > CNAME
 
       - name: Upload built site artifact
         uses: actions/upload-artifact@v4
         with:
           name: built-docs-site
-          path: site
+          path: |
+            docs
+            docs-v*
+            CNAME
 
       - name: Publish built site to site-files branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd site
+          mkdir -p publish
+          cp -R docs publish/
+          find . -maxdepth 1 -type d -name 'docs-v*' -exec cp -R {} publish/ \;
+          cp CNAME publish/
+
+          cd publish
 
           git init
           git checkout -B site-files
