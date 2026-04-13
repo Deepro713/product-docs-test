@@ -3,7 +3,7 @@ name: Build docs and publish site files branch
 on:
   push:
     branches:
-      - main
+      - '**'
     paths:
       - 'raw-v*/**'
       - 'requirements.txt'
