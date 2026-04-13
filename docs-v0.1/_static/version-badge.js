@@ -1,11 +1,51 @@
 document.addEventListener("DOMContentLoaded", function () {
+  function ensureTitleNode(container) {
+    if (!container) {
+      return null;
+    }
+
+    var existingTitle = container.querySelector(":scope > span");
+    if (existingTitle) {
+      return existingTitle;
+    }
+
+    // Shibuya can render nav links as plain text without child spans.
+    if (container.childElementCount === 0) {
+      var text = (container.textContent || "").trim();
+      if (!text) {
+        return null;
+      }
+      container.textContent = "";
+      var span = document.createElement("span");
+      span.textContent = text;
+      container.appendChild(span);
+      return span;
+    }
+
+    for (var i = 0; i < container.childNodes.length; i += 1) {
+      var node = container.childNodes[i];
+      if (node.nodeType === Node.TEXT_NODE && node.textContent && node.textContent.trim()) {
+        var wrapped = document.createElement("span");
+        wrapped.textContent = node.textContent.trim();
+        container.replaceChild(wrapped, node);
+        return wrapped;
+      }
+    }
+
+    return null;
+  }
+
   function applyLatestBadgeText() {
     var latestTokenPattern = /\|\s*Latest\b/;
-    var titleNodes = document.querySelectorAll(".sy-head .sy-head-links a > span, .sy-head .sy-head-links button > span");
+    var containers = document.querySelectorAll(".sy-head .sy-head-links a, .sy-head .sy-head-links button");
 
-    titleNodes.forEach(function (titleNode) {
-      var container = titleNode.parentElement;
+    containers.forEach(function (container) {
       if (!container || container.querySelector(".version-latest-badge")) {
+        return;
+      }
+
+      var titleNode = ensureTitleNode(container);
+      if (!titleNode) {
         return;
       }
 
