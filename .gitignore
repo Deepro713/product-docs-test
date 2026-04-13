@@ -2,4 +2,4 @@ site/
 .venv-docs/
 __pycache__/
 docs/
-docs*/
+docs-v*/

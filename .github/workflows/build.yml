@@ -33,22 +33,27 @@ jobs:
 
       - name: Build documentation
         run: |
+          set -euo pipefail
           rm -rf docs docs-v* CNAME
 
-          mapfile -t SRC_DIRS < <(find . -maxdepth 1 -type d -name 'raw-v*' -print | sed 's|^\./||' | sort -V)
-          if [ ${#SRC_DIRS[@]} -eq 0 ]; then
+          SRC_DIRS="$(find . -maxdepth 1 -type d -name 'raw-v*' -print | sed 's|^\./||' | sort -V)"
+          if [ -z "$SRC_DIRS" ]; then
             echo "No raw-v* directories found."
             exit 1
           fi
 
-          LATEST_SRC_DIR="${SRC_DIRS[${#SRC_DIRS[@]}-1]}"
-
-          for SRC_DIR in "${SRC_DIRS[@]}"; do
+          printf '%s\n' "$SRC_DIRS" | while IFS= read -r SRC_DIR; do
             VERSION="${SRC_DIR#raw-}"
-            sphinx-build -b html -W --keep-going "$SRC_DIR" "docs-$VERSION"
+            python -m sphinx -b html -W --keep-going "$SRC_DIR" "docs-$VERSION"
           done
 
-          sphinx-build -b html -W --keep-going "$LATEST_SRC_DIR" docs
+          LATEST_SRC_DIR="$(printf '%s\n' "$SRC_DIRS" | tail -n1)"
+          python -m sphinx -b html -W --keep-going "$LATEST_SRC_DIR" docs
+
+          if [ ! -f docs/index.html ]; then
+            echo "Build failed: docs/index.html was not generated."
+            exit 1
+          fi
 
       - name: Add custom domain file
         run: |
